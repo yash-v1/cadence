@@ -1,2 +1,2 @@
-# cadence
-An adaptive reading interface that combines webcam eye-tracking, bionic text weighting, and focus tunnelling to improve reading cadence and legibility.
+# Cadence
+Cadence is a client-side assistive reading platform designed to eliminate visual crowding, reduce gaze drift, and build reading rhythm. Using lightweight computer vision via standard webcams, it dynamically isolates the active reading line and adapts typography in real time with zero external sensors and 100% local privacy.
