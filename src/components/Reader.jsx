@@ -6,25 +6,69 @@ import { groupIntoLines } from "../core/lines";
 import { dwellSeconds, MIN_WPM, MAX_WPM } from "../core/pacing";
 import BionicText from "./BionicText";
 import PlaybackBar from "./PlaybackBar";
+import { speechSupported, speakWord, stopSpeaking } from "../lib/speech";
 
-export default function Reader({ text,attention}) {
+export default function Reader({ text,attention,onEnd}) {
   const s = useSettings();
   const reduce = useReducedMotion();
   const wrapRef = useRef(null);
   const textRef = useRef(null);
+  const onEndRef = useRef(onEnd);
+  const currentUtterance = useRef(null); // which spoken word is the latest
+  const speakTimer = useRef(0);          // safety net, see below
+  useEffect(() => { onEndRef.current = onEnd; });
   const placed = useRef(false);
 
   const [lines, setLines] = useState([]);
   const [index, setIndex] = useState(0);
+  const [prevText, setPrevText] = useState(text);
+  if (prevText !== text) {
+    setPrevText(text);
+    setIndex(0);
+  }
   const [playing, setPlaying] = useState(false); // Always starts paused
+  const [speaking, setSpeaking] = useState(false);
+
   // The camera can only pause the ruler. Your own Pause button always wins.
   const cameraOn = attention.status === "on";
   const attending = attention.state === "attending";
-  const running = playing && (!cameraOn || attending);
+  const running = playing && (!cameraOn || attending) && !speaking;
 
   const y = useSpring(0, { stiffness: 300, damping: 35 });
   const focusY = useTransform(y, (v) => `${v}px`);
   const rulerHeight = s.fontSize * s.lineHeight;
+
+  // Say one word, and hold the ruler until it is finished.
+  const speak = (word) => {
+    clearTimeout(speakTimer.current);
+    setSpeaking(true);
+
+    const finish = () => {
+      // Ignore the "finished" signal of an older word that a newer click replaced.
+      if (currentUtterance.current === u) setSpeaking(false);
+    };
+    const u = speakWord(
+      word,
+      { voiceName: s.voiceName, rate: s.speechRate, pitch: s.speechPitch },
+      { onEnd: finish }
+    );
+    currentUtterance.current = u;
+
+    // Safety net: if a browser never reports "finished", don't freeze the ruler.
+    speakTimer.current = setTimeout(finish, 5000);
+  };
+
+  // Stop talking when speech is switched off, or when the reader goes away.
+  useEffect(() => {
+    if (!s.speakOnClick) {
+      stopSpeaking();
+      setSpeaking(false);
+    }
+  }, [s.speakOnClick]);
+  useEffect(() => () => {
+    stopSpeaking();
+    clearTimeout(speakTimer.current);
+  }, []);
 
   // --- Measure where every line is ---
   const measure = useCallback(() => {
@@ -61,8 +105,11 @@ export default function Reader({ text,attention}) {
     if (!running || lines.length === 0) return;
     const ms = dwellSeconds(lines[safeIndex].wordCount, s.wpm) * 1000;
     const id = setTimeout(() => {
-      if (safeIndex >= lines.length - 1) setPlaying(false);
-      else setIndex(safeIndex + 1);
+      if (safeIndex >= lines.length - 1) {
+        if (!onEndRef.current?.()) setPlaying(false);
+      } else {
+        setIndex(safeIndex + 1);
+      }
     }, ms);
     return () => clearTimeout(id);
   }, [running, safeIndex, lines, s.wpm]);
@@ -124,6 +171,8 @@ export default function Reader({ text,attention}) {
   // --- Click: jump to the nearest line ---
   const jumpToClick = (e) => {
     if (!lines.length) return;
+    const wordEl = e.target.closest?.("[data-word]");
+    if (s.speakOnClick && speechSupported && wordEl) speak(wordEl.textContent);
     const clickY = e.clientY - textRef.current.getBoundingClientRect().top;
     let best = 0;
     lines.forEach((l, i) => {
@@ -146,7 +195,7 @@ export default function Reader({ text,attention}) {
     : {};
 
   return (
-    <div style={{ maxWidth: "65ch" }}>
+    <div style={{maxWidth: `${s.lineLength}ch`}}>
       <div ref={wrapRef} className="relative" onClick={jumpToClick}>
         <motion.div
           ref={textRef}

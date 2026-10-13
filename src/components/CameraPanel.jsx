@@ -61,7 +61,7 @@ export default function CameraPanel({ attention }) {
       )}
 
       {!on && showNotice && !loading && (
-        <div className="space-y-2 rounded bg-gray-50 p-3 text-sm">
+        <div className="space-y-2 rounded bg-panel p-3 text-sm">
           <p>
             Cadence uses your camera only to notice when you look away, so it can pause
             the ruler. The video stays on your device and is never saved or sent anywhere.
@@ -69,7 +69,7 @@ export default function CameraPanel({ attention }) {
           </p>
           <div className="flex gap-2">
             <button
-              className="rounded bg-gray-900 px-3 py-1 text-white"
+              className="rounded bg-ink px-3 py-1 text-surface"
               onClick={() => { setShowNotice(false); start(); }}
             >
               Turn on camera

@@ -11,7 +11,14 @@ export const DEFAULTS = {
     tunnel: true,        // dim the lines that aren't active
     tunnelDim: 0.25,     // brightness of dimmed text (0 to 1)
     wpm: 120,            // reading speed, words per minute
-    sensitivity:"standard", // relaxed | standard | strict
+    sensitivity: "standard", // relaxed | standard | strict
+    theme: "light",      // light | cream | dark
+    lineLength: 65,      // characters per line
+    onboarded: false,    // has the visitor dismissed the welcome card?
+    speakOnClick: false, // click a word to hear it (off, so clicks never surprise you with sound)
+    voiceName: "",       // "" = the device's default voice
+    speechRate: 0.9,     // 1 = normal speed
+    speechPitch: 1,
 };
 
 export const useSettings = create(

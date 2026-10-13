@@ -1,1 +1,49 @@
 @import "tailwindcss";
+
+:root {
+  --bg: #ffffff;
+  --ink: #1f2937;
+  --muted: #5b6472;
+  --panel: #f3f4f6;
+  --line: #d1d5db;
+}
+
+[data-theme="cream"] {
+  --bg: #f6efdc;
+  --ink: #2b2a26;
+  --muted: #62604f;
+  --panel: #ece3cb;
+  --line: #cfc4a6;
+}
+
+[data-theme="dark"] {
+  --bg: #16181d;
+  --ink: #e7e5e0;
+  --muted: #a3a9b5;
+  --panel: #22252c;
+  --line: #3a3f49;
+  color-scheme: dark;
+}
+
+/* Lets Tailwind use our names: bg-surface, text-ink, text-muted, bg-panel */
+@theme inline {
+  --color-surface: var(--bg);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-panel: var(--panel);
+  --color-line: var(--line);
+}
+
+@layer base {
+  body {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  *, ::before, ::after {
+    border-color: var(--line);
+  }
+  textarea, select {
+    background: var(--panel);
+    color: var(--ink);
+  }
+}

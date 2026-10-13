@@ -10,7 +10,7 @@ function IconButton({ label, onClick, primary = false, children }) {
       title={label}
       onClick={onClick}
       className={`flex h-11 w-11 items-center justify-center rounded-full border ${
-        primary ? "bg-gray-900 text-white" : "bg-white"
+        primary ? "bg-ink text-surface" : "bg-surface"
       }`}
     >
       {children}
@@ -28,7 +28,7 @@ export default function PlaybackBar({
     <div
       role="group"
       aria-label="Reading pace controls"
-      className="sticky bottom-4 mt-6 flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3 shadow"
+      className="sticky bottom-4 mt-6 flex flex-wrap items-center gap-3 rounded-xl border bg-surface p-3 shadow"
     >
       <IconButton label="Restart from the top" onClick={onRestart}>
         <RotateCcw size={18} />
@@ -46,7 +46,7 @@ export default function PlaybackBar({
       <label className="min-w-40 flex-1">
         <span className="flex justify-between text-sm font-medium">
           Speed: {paceLabel(wpm)}
-          <span className="text-gray-500">{wpm} WPM</span>
+          <span className="text-muted">{wpm} WPM</span>
         </span>
         <input
           type="range"
@@ -60,9 +60,9 @@ export default function PlaybackBar({
       </label>
       
       {statusText && (
-        <span className="text-sm text-gray-600" aria-live="polite">{statusText}</span>
+        <span className="text-sm text-muted" aria-live="polite">{statusText}</span>
       )}
-      <span className="text-sm text-gray-500" aria-live="off">
+      <span className="text-sm text-muted" aria-live="off">
         Line {lineTotal ? lineNumber : 0} / {lineTotal}
       </span>
     </div>
