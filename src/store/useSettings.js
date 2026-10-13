@@ -10,7 +10,8 @@ export const DEFAULTS = {
     bionic: false,       // off by default, as in the SRS
     tunnel: true,        // dim the lines that aren't active
     tunnelDim: 0.25,     // brightness of dimmed text (0 to 1)
-    wpm: 120,           // reading speed, words per minute
+    wpm: 120,            // reading speed, words per minute
+    sensitivity:"standard", // relaxed | standard | strict
 };
 
 export const useSettings = create(

@@ -19,7 +19,7 @@ function IconButton({ label, onClick, primary = false, children }) {
 }
 
 export default function PlaybackBar({
-  playing, onToggle, onPrev, onNext, onRestart, lineNumber, lineTotal,
+  playing, onToggle, onPrev, onNext, onRestart, lineNumber, lineTotal, statusText,
 }) {
   const wpm = useSettings((s) => s.wpm);
   const update = useSettings((s) => s.update);
@@ -58,7 +58,10 @@ export default function PlaybackBar({
           onChange={(e) => update({ wpm: Number(e.target.value) })}
         />
       </label>
-
+      
+      {statusText && (
+        <span className="text-sm text-gray-600" aria-live="polite">{statusText}</span>
+      )}
       <span className="text-sm text-gray-500" aria-live="off">
         Line {lineTotal ? lineNumber : 0} / {lineTotal}
       </span>

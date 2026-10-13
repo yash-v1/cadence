@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createAttentionTracker } from "./attention";
+import { createAttentionTracker, isAttending, limitsFor } from "./attention";
 
 // A tracker that is already in the "attending" state (time is now 300).
 function attendingTracker() {
@@ -38,5 +38,29 @@ describe("createAttentionTracker", () => {
     const t = attendingTracker();
     t.update(false, 1000, { pauseMs: 200 });
     expect(t.update(false, 1200, { pauseMs: 200 })).toBe("away");
+  });
+});
+
+describe("limitsFor", () => {
+  it("falls back to standard for unknown names", () => {
+    expect(limitsFor("nonsense")).toEqual(limitsFor("standard"));
+  });
+  it("strict allows less head turn than relaxed", () => {
+    expect(limitsFor("strict").yaw).toBeLessThan(limitsFor("relaxed").yaw);
+  });
+});
+
+describe("isAttending", () => {
+  const limits = limitsFor("standard");
+  const facing = { present: true, yaw: 5, pitch: 5, down: 0.1, side: 0.1, blink: 0 };
+
+  it("is true when the reader faces the screen", () => {
+    expect(isAttending(facing, limits)).toBe(true);
+  });
+  it("is false when no face is present", () => {
+    expect(isAttending({ ...facing, present: false }, limits)).toBe(false);
+  });
+  it("is false when the head is turned too far", () => {
+    expect(isAttending({ ...facing, yaw: 40 }, limits)).toBe(false);
   });
 });

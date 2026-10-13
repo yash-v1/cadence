@@ -7,7 +7,7 @@ import { dwellSeconds, MIN_WPM, MAX_WPM } from "../core/pacing";
 import BionicText from "./BionicText";
 import PlaybackBar from "./PlaybackBar";
 
-export default function Reader({ text }) {
+export default function Reader({ text,attention}) {
   const s = useSettings();
   const reduce = useReducedMotion();
   const wrapRef = useRef(null);
@@ -17,6 +17,10 @@ export default function Reader({ text }) {
   const [lines, setLines] = useState([]);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false); // Always starts paused
+  // The camera can only pause the ruler. Your own Pause button always wins.
+  const cameraOn = attention.status === "on";
+  const attending = attention.state === "attending";
+  const running = playing && (!cameraOn || attending);
 
   const y = useSpring(0, { stiffness: 300, damping: 35 });
   const focusY = useTransform(y, (v) => `${v}px`);
@@ -53,15 +57,15 @@ export default function Reader({ text }) {
   const center = lines[safeIndex]?.center;
 
   // --- The pacing timer ---
-  useEffect(() => {
-    if (!playing || lines.length === 0) return;
+    useEffect(() => {
+    if (!running || lines.length === 0) return;
     const ms = dwellSeconds(lines[safeIndex].wordCount, s.wpm) * 1000;
     const id = setTimeout(() => {
-      if (safeIndex >= lines.length - 1) setPlaying(false); // reached the end
+      if (safeIndex >= lines.length - 1) setPlaying(false);
       else setIndex(safeIndex + 1);
     }, ms);
-    return () => clearTimeout(id); // cancel if anything changes first
-  }, [playing, safeIndex, lines, s.wpm]);
+    return () => clearTimeout(id);
+  }, [running, safeIndex, lines, s.wpm]);
 
   // --- Move the ruler, and keep it on screen ---
   useEffect(() => {
@@ -177,6 +181,9 @@ export default function Reader({ text }) {
         onRestart={restart}
         lineNumber={safeIndex + 1}
         lineTotal={lines.length}
+        statusText={
+          !cameraOn ? "" : !playing ? "Camera on" : attending ? "Following you" : "Paused – waiting for you"
+        }
       />
     </div>
   );
