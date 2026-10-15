@@ -8,6 +8,7 @@ import { useAttention } from "./hooks/useAttention";
 import { useSettings } from "./store/useSettings";
 import DocumentLoader from "./components/DocumentLoader";
 import PageNav from "./components/PageNav";
+import Presets from "./components/Presets";
 
 export default function App() {
   const [pasted, setPasted] = useState(
@@ -47,6 +48,7 @@ export default function App() {
         <aside className="space-y-4 md:sticky md:top-6 md:max-h-[calc(100vh-3rem)] md:self-start md:overflow-y-auto md:pr-1">
           <h1 className="text-3xl font-bold">Cadence</h1>
           <CameraPanel attention={attention} />
+          <Presets />
           <Controls />
           <HelpPanel />
         </aside>

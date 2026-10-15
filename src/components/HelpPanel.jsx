@@ -1,11 +1,12 @@
 import { useSettings } from "../store/useSettings";
+import SettingsFile from "./SettingsFile";
 
 export default function HelpPanel() {
-  const reset = useSettings((s) => s.reset);
+    const resetAll = useSettings((s) => s.resetAll);
 
   const deleteEverything = () => {
-    if (!window.confirm("Delete all saved settings on this device?")) return;
-    reset();
+    if (!window.confirm("Delete all saved settings and custom setups on this device?")) return;
+    resetAll();
     useSettings.persist.clearStorage(); // removes the saved copy from the browser
   };
 
@@ -32,12 +33,13 @@ export default function HelpPanel() {
             With "Click a word to hear it" on, click any word to hear it.
           </p>
           <p className="mt-2 text-muted">
-            Only your settings (font, spacing, colours, speed) are saved, on this device
+            Only your settings and custom setups (font, spacing, colours, speed) are saved, on this device
             only, so they are still here next time.
           </p>
         </div>
 
         <button className="rounded border px-3 py-1" onClick={deleteEverything}>
+          <SettingsFile />
           Delete my saved data
         </button>
       </div>

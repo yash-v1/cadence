@@ -1,33 +1,64 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import {
+  addPreset, mergePresets, pickPresetValues, sanitizePresetList,
+} from "../core/customPresets";
 
 export const DEFAULTS = {
-    fontFamily: "lexend",
-    fontSize: 20,        // pixels
-    letterSpacing: 0.05, // em (1em = one font size)
-    wordSpacing: 0.15,   // em
-    lineHeight: 1.8,     // multiple of font size
-    bionic: false,       // off by default, as in the SRS
-    tunnel: true,        // dim the lines that aren't active
-    tunnelDim: 0.25,     // brightness of dimmed text (0 to 1)
-    wpm: 120,            // reading speed, words per minute
-    sensitivity: "standard", // relaxed | standard | strict
-    theme: "light",      // light | cream | dark
-    lineLength: 65,      // characters per line
-    onboarded: false,    // has the visitor dismissed the welcome card?
-    speakOnClick: false, // click a word to hear it (off, so clicks never surprise you with sound)
-    voiceName: "",       // "" = the device's default voice
-    speechRate: 0.9,     // 1 = normal speed
-    speechPitch: 1,
+  fontFamily: "lexend",
+  fontSize: 20,
+  letterSpacing: 0.05,
+  wordSpacing: 0.15,
+  lineHeight: 1.8,
+  bionic: true,
+  tunnel: true,
+  tunnelDim: 0.25,
+  wpm: 120,
+  sensitivity: "standard",
+  theme: "dark",
+  lineLength: 65,
+  onboarded: false,
+  speakOnClick: false,
+  voiceName: "",
+  speechRate: 0.9,
+  speechPitch: 1,
 };
 
 export const useSettings = create(
-    persist(
-        (set) => ({
-            ...DEFAULTS,
-            update: (changes) => set(changes), // update({ fontSize: 24 })
-            reset: () => set(DEFAULTS),
-        }),
-        { name: "cadence-settings" } // the key used in localStorage
-    )
+  persist(
+    (set, get) => ({
+      ...DEFAULTS,
+      customPresets: [],
+
+      update: (changes) => set(changes),
+      reset: () => set(DEFAULTS), // settings only: your custom setups stay
+      resetAll: () => set({ ...DEFAULTS, customPresets: [] }),
+
+      // Saves the current look under a name. Returns an error message, or "" if it worked.
+      saveCustomPreset: (name) => {
+        const { list, error } = addPreset(get().customPresets, name, pickPresetValues(get()));
+        if (!error) set({ customPresets: list });
+        return error;
+      },
+      deleteCustomPreset: (id) =>
+        set({ customPresets: get().customPresets.filter((p) => p.id !== id) }),
+
+      // Adds presets from a settings file. Returns how many were added.
+      importCustomPresets: (incoming) => {
+        const before = get().customPresets;
+        const after = mergePresets(before, incoming);
+        set({ customPresets: after });
+        return after.length - before.length;
+      },
+    }),
+    {
+      name: "cadence-settings",
+      // Never trust what was saved: clean the preset list whenever settings load.
+      merge: (persisted, current) => ({
+        ...current,
+        ...persisted,
+        customPresets: sanitizePresetList(persisted?.customPresets),
+      }),
+    }
+  )
 );
