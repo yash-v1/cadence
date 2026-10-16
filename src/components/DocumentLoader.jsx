@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { FileUp, Loader2, AlertCircle } from "lucide-react";
 import { extractPdfPages } from "../lib/pdf";
 
 const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
@@ -62,18 +63,30 @@ export default function DocumentLoader({ onLoaded }) {
         setDragging(false);
         handleFile(e.dataTransfer.files[0]);
       }}
-      className={`rounded-xl border-2 border-dashed p-5 text-center ${
-        dragging ? "bg-panel" : ""
+      className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition-all ${
+        dragging
+          ? "border-ink bg-panel/80 scale-[1.01]"
+          : "border-line bg-surface/50 hover:border-muted/40"
       }`}
     >
-      <p className="text-sm text-muted">Drag a PDF here, or</p>
+      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-panel text-muted mb-2.5">
+        <FileUp size={22} />
+      </div>
+      <p className="text-xs font-medium text-ink">Drag &amp; drop a PDF document here, or</p>
       <button
         type="button"
-        className="mt-2 rounded border px-4 py-2 disabled:opacity-50"
+        className="mt-3 flex min-h-[44px] items-center gap-2 rounded-xl border border-line bg-surface px-5 py-2 text-xs font-medium text-ink shadow-xs transition-colors hover:bg-surface-hover hover:border-muted/40 active:scale-[0.98] disabled:opacity-50"
         onClick={() => inputRef.current.click()}
         disabled={busy}
       >
-        {busy ? "Reading…" : "Choose a PDF"}
+        {busy ? (
+          <>
+            <Loader2 size={15} className="animate-spin text-muted" />
+            Reading document…
+          </>
+        ) : (
+          "Choose a PDF file"
+        )}
       </button>
       <input
         ref={inputRef}
@@ -87,12 +100,16 @@ export default function DocumentLoader({ onLoaded }) {
       />
 
       {progress && (
-        <p className="mt-2 text-sm text-muted" role="status">
-          Reading page {progress.n} of {progress.total}…
-        </p>
+        <div className="mt-3 flex items-center gap-2 rounded-xl bg-panel px-3 py-1.5 text-xs text-muted" role="status">
+          <Loader2 size={13} className="animate-spin text-ink" />
+          <span>Reading page {progress.n} of {progress.total}…</span>
+        </div>
       )}
       {error && (
-        <p className="mt-2 text-sm text-bad" role="alert">{error}</p>
+        <div className="mt-3 flex items-start gap-2 rounded-xl border border-bad-line bg-bad-bg p-3 text-xs text-bad text-left" role="alert">
+          <AlertCircle size={15} className="mt-0.5 shrink-0" />
+          <span>{error}</span>
+        </div>
       )}
     </div>
   );

@@ -18,7 +18,7 @@ export const DEFAULTS = {
   theme: "dark",
   lineLength: 65,
   onboarded: false,
-  speakOnClick: false,
+  speakOnClick: true,
   voiceName: "",
   speechRate: 0.9,
   speechPitch: 1,

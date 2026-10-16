@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Download, Upload, Check } from "lucide-react";
 import { useSettings } from "../store/useSettings";
 import { exportSettings, sanitizeSettings } from "../core/settingsSchema";
 import { sanitizePresetList } from "../core/customPresets";
@@ -53,17 +54,27 @@ export default function SettingsFile() {
   }
 
   return (
-    <div className="space-y-2">
-      <h3 className="font-medium">Move your settings</h3>
-      <p className="text-muted">
+    <div className="space-y-2.5">
+      <h3 className="text-xs font-semibold text-ink">Move your settings</h3>
+      <p className="text-xs text-muted leading-relaxed">
         Save your settings as a small file, then load it on another device or browser.
         The file contains only your settings, never your text or camera.
       </p>
-      <div className="flex flex-wrap gap-2">
-        <button type="button" className="rounded border px-3 py-1" onClick={handleExport}>
+      <div className="flex flex-wrap gap-2 pt-1">
+        <button
+          type="button"
+          className="flex min-h-[44px] items-center gap-1.5 rounded-xl border border-line bg-surface px-3 py-2 text-xs font-medium text-ink transition-colors hover:bg-surface-hover hover:border-muted/40 active:scale-[0.98]"
+          onClick={handleExport}
+        >
+          <Download size={14} />
           Save settings file
         </button>
-        <button type="button" className="rounded border px-3 py-1" onClick={() => inputRef.current.click()}>
+        <button
+          type="button"
+          className="flex min-h-[44px] items-center gap-1.5 rounded-xl border border-line bg-surface px-3 py-2 text-xs font-medium text-ink transition-colors hover:bg-surface-hover hover:border-muted/40 active:scale-[0.98]"
+          onClick={() => inputRef.current.click()}
+        >
+          <Upload size={14} />
           Load settings file
         </button>
       </div>
@@ -77,7 +88,12 @@ export default function SettingsFile() {
           e.target.value = "";
         }}
       />
-      <p role="status">{message}</p>
+      {message && (
+        <div className="flex items-center gap-1.5 rounded-xl bg-panel p-2.5 text-xs text-ink" role="status">
+          <Check size={14} className="shrink-0 text-ok" />
+          <span>{message}</span>
+        </div>
+      )}
     </div>
   );
 }

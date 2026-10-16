@@ -1,58 +1,102 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #ffffff;
-  --ink: #1f2937;
-  --muted: #5b6472;
-  --panel: #f3f4f6;
-  --line: #d1d5db;
-  --ok: #15803d;
-  --warn: #b45309;
-  --bad: #b91c1c;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --ink: #0f172a;
+  --muted: #475569;
+  --panel: #f1f5f9;
+  --line: #e2e8f0;
+  --accent: #1e293b;
+  --ok: #166534;
+  --ok-bg: #f0fdf4;
+  --ok-line: #bbf7d0;
+  --warn: #92400e;
+  --warn-bg: #fffbeb;
+  --warn-line: #fde68a;
+  --bad: #991b1b;
+  --bad-bg: #fef2f2;
+  --bad-line: #fecaca;
+  color-scheme: light;
 }
 
 [data-theme="cream"] {
   --bg: #f6efdc;
-  --ink: #2b2a26;
-  --muted: #62604f;
-  --panel: #ece3cb;
-  --line: #cfc4a6;
+  --surface: #fbf7ed;
+  --surface-hover: #f2e8d3;
+  --ink: #292520;
+  --muted: #5e584a;
+  --panel: #ebe1c9;
+  --line: #dcd1b8;
+  --accent: #3b352b;
+  --ok: #14532d;
+  --ok-bg: #e7f2df;
+  --ok-line: #bdd8af;
+  --warn: #78350f;
+  --warn-bg: #f8eed7;
+  --warn-line: #ebd3a5;
+  --bad: #7f1d1d;
+  --bad-bg: #f6dedc;
+  --bad-line: #e8b7b2;
+  color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #16181d;
-  --ink: #e7e5e0;
-  --muted: #a3a9b5;
-  --panel: #22252c;
-  --line: #3a3f49;
-  color-scheme: dark;
+  --bg: #12141a;
+  --surface: #1a1d26;
+  --surface-hover: #242833;
+  --ink: #f3f4f6;
+  --muted: #9ca3af;
+  --panel: #222632;
+  --line: #2e3544;
+  --accent: #e2e8f0;
   --ok: #4ade80;
+  --ok-bg: #142b1d;
+  --ok-line: #1e4f2e;
   --warn: #fbbf24;
+  --warn-bg: #31250b;
+  --warn-line: #584013;
   --bad: #f87171;
+  --bad-bg: #311414;
+  --bad-line: #582020;
+  color-scheme: dark;
 }
 
-/* Lets Tailwind use our names: bg-surface, text-ink, text-muted, bg-panel */
+/* Lets Tailwind use our names: bg-surface, text-ink, text-muted, bg-panel, border-line, etc. */
 @theme inline {
-  --color-surface: var(--bg);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-panel: var(--panel);
   --color-line: var(--line);
+  --color-accent: var(--accent);
   --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-ok-line: var(--ok-line);
   --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-line: var(--warn-line);
   --color-bad: var(--bad);
+  --color-bad-bg: var(--bad-bg);
+  --color-bad-line: var(--bad-line);
 }
 
 @layer base {
   body {
     background: var(--bg);
     color: var(--ink);
+    font-family: 'Lexend Variable', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
   *, ::before, ::after {
     border-color: var(--line);
   }
-  textarea, select {
-    background: var(--panel);
+  textarea, select, input[type="text"] {
+    background: var(--surface);
     color: var(--ink);
   }
 }
@@ -62,4 +106,51 @@
     outline: 3px solid var(--ink);
     outline-offset: 2px;
   }
+}
+
+/* Custom smooth range input styling */
+input[type="range"] {
+  appearance: none;
+  background: var(--panel);
+  border-radius: 9999px;
+  height: 8px;
+  cursor: pointer;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
 }

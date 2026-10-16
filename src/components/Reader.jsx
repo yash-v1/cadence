@@ -194,8 +194,15 @@ export default function Reader({ text,attention,onEnd}) {
     ? { maskImage: mask, WebkitMaskImage: mask }
     : {};
 
+  const rulerTint =
+    cameraOn && playing
+      ? attending
+        ? "bg-emerald-500/25 ring-1 ring-emerald-500/40"
+        : "bg-rose-500/25 ring-1 ring-rose-500/40"
+      : "bg-yellow-300/25 ring-1 ring-yellow-500/40";
+
   return (
-    <div style={{maxWidth: `${s.lineLength}ch`}}>
+    <div className="mx-auto w-full pb-32 md:pb-24" style={{maxWidth: `${s.lineLength}ch`}}>
       <div ref={wrapRef} className="relative" onClick={jumpToClick}>
         <motion.div
           ref={textRef}
@@ -216,7 +223,7 @@ export default function Reader({ text,attention,onEnd}) {
         {lines.length > 0 && (
           <motion.div
             aria-hidden="true"
-            className="pointer-events-none absolute left-0 right-0 rounded bg-yellow-300/25 ring-1 ring-yellow-500/40"
+            className={`pointer-events-none absolute left-0 right-0 rounded transition-colors duration-200 ${rulerTint}`}
             style={{ y, top: -rulerHeight / 2, height: rulerHeight }}
           />
         )}
