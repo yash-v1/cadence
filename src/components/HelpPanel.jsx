@@ -19,7 +19,7 @@ export default function HelpPanel() {
           <h3 className="font-medium">Keyboard shortcuts</h3>
           <p className="text-muted">
             Click on the text first, then: Space to play or pause · ↑ ↓ to change line ·
-            + and − to change speed.
+            + and − to change speed. Press Esc to pause from anywhere.
           </p>
         </div>
 

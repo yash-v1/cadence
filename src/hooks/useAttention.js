@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import { createAttentionTracker, isAttending, limitsFor } from "../core/attention";
 import { extractSignals } from "../core/faceSignals";
 
 const BASE = import.meta.env.BASE_URL;
 const FACE_LOST_MS = 3000; // how long without a face before we show a hint
-const BLINK_MS = 400; // a real blink is shorter than this
 
-async function createLandmarker(fileset, delegate) {
+async function createLandmarker(FaceLandmarker, fileset, delegate) {
   return FaceLandmarker.createFromOptions(fileset, {
     baseOptions: { modelAssetPath: `${BASE}mediapipe/face_landmarker.task`, delegate },
     runningMode: "VIDEO",
@@ -30,7 +28,6 @@ export function useAttention(sensitivity) {
   const streamRef = useRef(null);
   const landmarkerRef = useRef(null);
   const rafRef = useRef(0);
-  const blinkSince = useRef(null);
   const lastVideoTime = useRef(-1);
   const lastRun = useRef(0);
   const lastRaw = useRef(false);
@@ -90,11 +87,12 @@ export function useAttention(sensitivity) {
     setStatus("loading");
     setMessage("");
     try {
+      const { FaceLandmarker, FilesetResolver } = await import("@mediapipe/tasks-vision");
       const fileset = await FilesetResolver.forVisionTasks(`${BASE}mediapipe/wasm`);
       try {
-        landmarkerRef.current = await createLandmarker(fileset, "GPU");
+        landmarkerRef.current = await createLandmarker(FaceLandmarker, fileset, "GPU");
       } catch {
-        landmarkerRef.current = await createLandmarker(fileset, "CPU");
+        landmarkerRef.current = await createLandmarker(FaceLandmarker, fileset, "CPU");
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({

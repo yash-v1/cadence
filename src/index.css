@@ -6,6 +6,9 @@
   --muted: #5b6472;
   --panel: #f3f4f6;
   --line: #d1d5db;
+  --ok: #15803d;
+  --warn: #b45309;
+  --bad: #b91c1c;
 }
 
 [data-theme="cream"] {
@@ -23,6 +26,9 @@
   --panel: #22252c;
   --line: #3a3f49;
   color-scheme: dark;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --bad: #f87171;
 }
 
 /* Lets Tailwind use our names: bg-surface, text-ink, text-muted, bg-panel */
@@ -32,6 +38,9 @@
   --color-muted: var(--muted);
   --color-panel: var(--panel);
   --color-line: var(--line);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
 }
 
 @layer base {
@@ -45,5 +54,12 @@
   textarea, select {
     background: var(--panel);
     color: var(--ink);
+  }
+}
+
+@layer base {
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
   }
 }

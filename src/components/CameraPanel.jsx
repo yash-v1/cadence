@@ -26,9 +26,9 @@ export default function CameraPanel({ attention }) {
 
       {on && (
         <>
-          <p className="text-sm font-medium text-green-700">● Camera is on</p>
+          <p className="text-sm font-medium text-ok">● Camera is on</p>
           {faceLost && (
-            <p className="text-sm text-amber-700" role="status">
+            <p className="text-sm text-warn" role="status">
               We can't see your face. Try more light or move closer.
             </p>
           )}
@@ -82,7 +82,7 @@ export default function CameraPanel({ attention }) {
       )}
 
       {message && (
-        <p className="text-sm text-red-700" role="alert">{message}</p>
+        <p className="text-sm text-bad" role="alert">{message}</p>
       )}
     </section>
   );

@@ -32,7 +32,7 @@ export default function Reader({ text,attention,onEnd}) {
   // The camera can only pause the ruler. Your own Pause button always wins.
   const cameraOn = attention.status === "on";
   const attending = attention.state === "attending";
-  const running = playing && (!cameraOn || attending) && !speaking;
+  const running = playing && (!cameraOn || attending) && !(speaking && s.speakOnClick);
 
   const y = useSpring(0, { stiffness: 300, damping: 35 });
   const focusY = useTransform(y, (v) => `${v}px`);
@@ -62,7 +62,6 @@ export default function Reader({ text,attention,onEnd}) {
   useEffect(() => {
     if (!s.speakOnClick) {
       stopSpeaking();
-      setSpeaking(false);
     }
   }, [s.speakOnClick]);
   useEffect(() => () => {
@@ -154,6 +153,7 @@ export default function Reader({ text,attention,onEnd}) {
   useEffect(() => {
     const onKey = (e) => {
       const tag = e.target.tagName;
+      if (e.key === "Escape") { setPlaying(false); return; } // always works, from anywhere
       if (["INPUT", "TEXTAREA", "SELECT"].includes(tag)) return;
 
       if (e.key === "ArrowDown") { e.preventDefault(); goNext(); }

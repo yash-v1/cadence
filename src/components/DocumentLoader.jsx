@@ -92,7 +92,7 @@ export default function DocumentLoader({ onLoaded }) {
         </p>
       )}
       {error && (
-        <p className="mt-2 text-sm text-red-700" role="alert">{error}</p>
+        <p className="mt-2 text-sm text-bad" role="alert">{error}</p>
       )}
     </div>
   );
