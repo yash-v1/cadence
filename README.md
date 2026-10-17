@@ -6,11 +6,11 @@ A calmer way to read on screen. Cadence is a free, in-browser reading aid for pe
 
 ## Following Camera
 
-![Resumed](cadence_resume.png)
+<img width="1895" height="828" alt="cadence_resume" src="https://github.com/user-attachments/assets/68fdf8d0-6064-4464-87d6-ad93b88528d3" />
 
 ## Not Following Camera
 
-![Paused](cadence_paused.png)
+<img width="1896" height="830" alt="cadence_paused" src="https://github.com/user-attachments/assets/1d39a87b-d378-4d7b-b936-d99d0068cddc" />
 
 > Cadence is a reading aid, not a medical or diagnostic tool. It makes no claims about treating or detecting any condition.
 
